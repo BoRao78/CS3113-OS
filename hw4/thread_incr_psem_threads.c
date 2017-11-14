@@ -89,5 +89,6 @@ main(int argc, char *argv[])
 	}
 
     printf("glob = %d\n", glob);
+    free(TT);
     exit(EXIT_SUCCESS);
 }

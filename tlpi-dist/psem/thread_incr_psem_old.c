@@ -21,7 +21,6 @@
 #include <pthread.h>
 #include "tlpi_hdr.h"
 
-
 static int glob = 0;
 static sem_t sem;
 
@@ -49,44 +48,33 @@ threadFunc(void *arg)
 int
 main(int argc, char *argv[])
 {
-    pthread_t *TT;
-    int loops, s, num, thread_num;
-	
-    if(argc > 2){
-	loops = getInt(argv[1], GN_GT_0, "num-loops");
-	thread_num = getInt(argv[2], GN_GT_0, "num_threads");
-    }
-    else{
-	fprintf(stdout, "Not enough parameters.\n");
-	exit(0);
-    }
-   // loops = (argc > 1) ? getInt(argv[1], GN_GT_0, "num-loops") : 10000000;
+    pthread_t t1, t2;
+    int loops, s;
+
+    loops = (argc > 1) ? getInt(argv[1], GN_GT_0, "num-loops") : 10000000;
 
     /* Initialize a semaphore with the value 1 */
 
     if (sem_init(&sem, 0, 1) == -1)
         errExit("sem_init");
 
-    TT = (pthread_t *)malloc(sizeof(pthread_t) * thread_num);
-	
     /* Create two threads that increment 'glob' */
-    for(num = 0; num < thread_num; num++){
-	
-	s = pthread_create(&TT[num], NULL, threadFunc, &loops);
-	if (s != 0)
-		errExitEN(s, "pthread_create");
-   
-	}
+
+    s = pthread_create(&t1, NULL, threadFunc, &loops);
+    if (s != 0)
+        errExitEN(s, "pthread_create");
+    s = pthread_create(&t2, NULL, threadFunc, &loops);
+    if (s != 0)
+        errExitEN(s, "pthread_create");
 
     /* Wait for threads to terminate */
 
-    for(num = 0; num < thread_num; num++){
-	
-	s = pthread_join(TT[num], NULL);
-	if (s != 0)
-		errExitEN(s, "pthread_join");
-   
-	}
+    s = pthread_join(t1, NULL);
+    if (s != 0)
+        errExitEN(s, "pthread_join");
+    s = pthread_join(t2, NULL);
+    if (s != 0)
+        errExitEN(s, "pthread_join");
 
     printf("glob = %d\n", glob);
     exit(EXIT_SUCCESS);
