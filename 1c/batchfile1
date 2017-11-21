@@ -1,0 +1,4 @@
+ls -al
+cat makefile
+cd /projects
+dir

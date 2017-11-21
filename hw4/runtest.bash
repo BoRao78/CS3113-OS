@@ -6,7 +6,7 @@ CORES=$(grep -c '^processor' /proc/cpuinfo)
 CSVFILE=$2_${CORES}cores.csv
 for threads in 2 4 8 16
 do
-	for loops in 200000 400000 800000 1600000
+	for loops in 20000000 40000000 80000000 160000000
 	do
 		/usr/bin/time -f "$CORES, $loops, $threads, %e, %U, %S" \
 			--append --quiet --output=raw_${CSVFILE} \
